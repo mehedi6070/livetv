@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mehedi Internet - Live TV</title>
-  
-  <!-- Video.js CSS -->
-  <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
 
   <style>
     :root {
@@ -88,21 +85,16 @@
       margin-bottom: 20px;
     }
 
-    .video-js {
+    .video-container {
       width: 100%;
-      height: auto;
       aspect-ratio: 16/9;
+      background-color: #000;
     }
 
-    .vjs-default-skin .vjs-big-play-button {
-      background-color: rgba(255, 102, 0, 0.8) !important;
-      border-color: var(--primary) !important;
-      border-radius: 50% !important;
-      width: 2em !important;
-      height: 2em !important;
-      line-height: 2em !important;
-      margin-left: -1em !important;
-      margin-top: -1em !important;
+    video {
+      width: 100%;
+      height: 100%;
+      outline: none;
     }
 
     .now-playing {
@@ -280,12 +272,12 @@
   <div class="main-container">
     <!-- Player Card -->
     <div class="player-card">
-      <video id="tv-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto">
-        <source src="https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8" type="application/x-mpegURL">
-      </video>
+      <div class="video-container">
+        <video id="tv-player" controls preload="auto" playsinline></video>
+      </div>
       <div class="now-playing">
         <span class="now-playing-dot"></span>
-        <span id="channel-title">NOW PLAYING: SOMOY NEWS</span>
+        <span id="channel-title">NOW PLAYING: Somoy News</span>
       </div>
     </div>
 
@@ -514,28 +506,46 @@
     </a>
   </div>
 
-  <!-- Video.js Script -->
-  <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+  <!-- HLS.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  
   <script>
-    // Video.js Player Initialization
-    var player = videojs('tv-player', {
-      autoplay: false,
-      controls: true,
-      responsive: true,
-      fluid: true
-    });
+    var video = document.getElementById('tv-player');
+    var hls;
 
-    // Proxy Handling using AllOrigins
+    // Stream Play Function
+    function playM3u8(url) {
+      if (Hls.isSupported()) {
+        if (hls) {
+          hls.destroy();
+        }
+        hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true
+        });
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          video.play().catch(function(e) {
+            console.log("Autoplay blocked:", e);
+          });
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.play();
+      }
+    }
+
+    // Proxy Handling Function
     function getSecureStreamUrl(url) {
       if (url.startsWith('http://') || url.includes('103.165.93.31') || url.includes('cricone.site')) {
-        return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+        return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url);
       }
       return url;
     }
 
-    // Function to handle Channel Switching
+    // Channel Switcher Function
     function changeChannel(element, m3u8Url, channelName) {
-      // Highlight Active Channel Card
       var cards = document.getElementsByClassName('channel-card');
       for (var i = 0; i < cards.length; i++) {
         cards[i].classList.remove('active');
@@ -544,29 +554,18 @@
         element.classList.add('active');
       }
 
-      // Update Channel Title Header
       document.getElementById('channel-title').innerText = "NOW PLAYING: " + channelName;
-
-      // Get Secure Proxied URL
+      
       var finalUrl = getSecureStreamUrl(m3u8Url);
-
-      // Load Source and Play
-      player.src({
-        src: finalUrl,
-        type: 'application/x-mpegURL'
-      });
-
-      player.ready(function() {
-        var promise = player.play();
-        if (promise !== undefined) {
-          promise.catch(function(error) {
-            console.log("Autoplay blocked by browser:", error);
-          });
-        }
-      });
+      playM3u8(finalUrl);
     }
 
-    // Search Box Filtering Function
+    // Page Load Setup
+    window.onload = function() {
+      playM3u8('https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8');
+    };
+
+    // Filter Function for Search
     function filterChannels() {
       var input = document.getElementById('search').value.toLowerCase();
       var cards = document.getElementsByClassName('channel-card');
