@@ -96,7 +96,7 @@
       display: block;
     }
 
-    /* Now Playing Bar with Quality Selector */
+    /* Now Playing Bar with Quality Selector & Real-Time Controls */
     .now-playing-bar {
       background: #24242b;
       padding: 12px 18px;
@@ -127,6 +127,13 @@
       animation: pulse 1.5s infinite;
     }
 
+    .controls-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .quality-control {
       display: flex;
       align-items: center;
@@ -149,6 +156,27 @@
 
     .quality-select:hover {
       background: var(--card-hover);
+    }
+
+    /* Real-Time Sync Button */
+    .live-sync-btn {
+      background: #e60000;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s;
+      box-shadow: 0 0 8px rgba(230, 0, 0, 0.5);
+    }
+
+    .live-sync-btn:hover {
+      background: #ff1a1a;
     }
 
     @keyframes pulse {
@@ -314,12 +342,20 @@
           <span class="now-playing-dot"></span>
           <span id="channel-title">বর্তমানে চলছে: SOMOY NEWS</span>
         </div>
-        <!-- Video Quality Switcher Dropdown -->
-        <div class="quality-control">
-          <span>⚙️ কোয়ালিটি:</span>
-          <select id="qualitySelect" class="quality-select" onchange="changeQuality(this.value)">
-            <option value="-1">Auto (Auto-Detect)</option>
-          </select>
+        
+        <div class="controls-wrapper">
+          <!-- Real-Time Sync Button -->
+          <button class="live-sync-btn" onclick="syncRealTimeLive()">
+            🔴 LIVE SYNC
+          </button>
+          
+          <!-- Video Quality Switcher Dropdown -->
+          <div class="quality-control">
+            <span>⚙️ কোয়ালিটি:</span>
+            <select id="qualitySelect" class="quality-select" onchange="changeQuality(this.value)">
+              <option value="-1">Auto (Auto-Detect)</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -548,7 +584,7 @@
     var hls = null;
     var defaultUrl = 'https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8';
 
-    // Play Stream Function using HLS.js
+    // Real-time Low-Latency Configuration
     function playHlsStream(url) {
       if (Hls.isSupported()) {
         if (hls) {
@@ -556,7 +592,11 @@
         }
         hls = new Hls({
           enableWorker: true,
-          lowLatencyMode: true
+          lowLatencyMode: true,           // Enables HLS low-latency mode
+          liveSyncDurationCount: 1,       // Keeps playback closest to live edge
+          liveMaxLatencyDurationCount: 3, // Reduces delay relative to real-time broadcasting
+          maxBufferLength: 10,             // Optimized buffer size
+          liveDurationInfinity: true
         });
         hls.loadSource(url);
         hls.attachMedia(video);
@@ -582,6 +622,14 @@
         video.addEventListener('loadedmetadata', function() {
           video.play();
         });
+      }
+    }
+
+    // Function to Jump straight to Real-Time Live Point
+    function syncRealTimeLive() {
+      if (video.seekable.length > 0) {
+        video.currentTime = video.seekable.end(video.seekable.length - 1);
+        video.play();
       }
     }
 
