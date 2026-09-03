@@ -285,7 +285,7 @@
       </video>
       <div class="now-playing">
         <span class="now-playing-dot"></span>
-        <span id="channel-title">NOW PLAYING: Somoy News</span>
+        <span id="channel-title">NOW PLAYING: SOMOY NEWS</span>
       </div>
     </div>
 
@@ -525,16 +525,60 @@
       fluid: true
     });
 
+    // Proxy Handling using AllOrigins
     function getSecureStreamUrl(url) {
       if (url.startsWith('http://') || url.includes('103.165.93.31') || url.includes('cricone.site')) {
-        return 'https://corsproxy.io/?' + encodeURIComponent(url);
+        return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
       }
       return url;
     }
 
     // Function to handle Channel Switching
     function changeChannel(element, m3u8Url, channelName) {
-        ...
+      // Highlight Active Channel Card
+      var cards = document.getElementsByClassName('channel-card');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].classList.remove('active');
+      }
+      if (element) {
+        element.classList.add('active');
+      }
+
+      // Update Channel Title Header
+      document.getElementById('channel-title').innerText = "NOW PLAYING: " + channelName;
+
+      // Get Secure Proxied URL
+      var finalUrl = getSecureStreamUrl(m3u8Url);
+
+      // Load Source and Play
+      player.src({
+        src: finalUrl,
+        type: 'application/x-mpegURL'
+      });
+
+      player.ready(function() {
+        var promise = player.play();
+        if (promise !== undefined) {
+          promise.catch(function(error) {
+            console.log("Autoplay blocked by browser:", error);
+          });
+        }
+      });
+    }
+
+    // Search Box Filtering Function
+    function filterChannels() {
+      var input = document.getElementById('search').value.toLowerCase();
+      var cards = document.getElementsByClassName('channel-card');
+
+      for (var i = 0; i < cards.length; i++) {
+        var title = cards[i].getElementsByTagName('h4')[0].innerText.toLowerCase();
+        if (title.includes(input)) {
+          cards[i].style.display = "flex";
+        } else {
+          cards[i].style.display = "none";
+        }
+      }
     }
   </script>
 
