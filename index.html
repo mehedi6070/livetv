@@ -1,677 +1,629 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mehedi Internet - Live TV</title>
-  
-  <!-- HLS.js CDN Library -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mehedi Internet - Live TV</title>
 
-  <style>
-    :root {
-      --primary: #ff6600; /* Premium Orange */
-      --primary-dark: #cc5200;
-      --bg-dark: #0f0f11;
-      --card-bg: #1a1a1e;
-      --card-hover: #26262c;
-      --text-main: #ffffff;
-      --text-muted: #b3b3b3;
-    }
+<!-- HLS.js CDN Library -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root {
+--primary: #ff6600; /* Premium Orange */
+--primary-dark: #cc5200;
+--bg-dark: #0f0f11;
+--card-bg: #1a1a1e;
+--card-hover: #26262c;
+--text-main: #ffffff;
+--text-muted: #b3b3b3;
+}
 
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      padding-bottom: 90px;
-    }
+* {
+box-sizing: border-box;
+}
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-dark);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #333;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary);
-    }
+body {
+background-color: var(--bg-dark);
+color: var(--text-main);
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin: 0;
+padding: 0;
+padding-bottom: 90px;
+}
 
-    /* Header Section */
-    .header {
-      background: linear-gradient(135deg, #1f1f24, #0f0f11);
-      border-bottom: 3px solid var(--primary);
-      text-align: center;
-      padding: 20px 15px;
-      box-shadow: 0 4px 15px rgba(255, 102, 0, 0.2);
-    }
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+width: 8px;
+}
+::-webkit-scrollbar-track {
+background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+background: #333;
+border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+background: var(--primary);
+}
 
-    .header h1 {
-      margin: 0;
-      color: var(--primary);
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
-    }
+/* Header Section */
+.header {
+background: linear-gradient(135deg, #1f1f24, #0f0f11);
+border-bottom: 3px solid var(--primary);
+text-align: center;
+padding: 20px 15px;
+box-shadow: 0 4px 15px rgba(255, 102, 0, 0.2);
+}
 
-    .header p {
-      margin: 5px 0 0;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
+.header h1 {
+margin: 0;
+color: var(--primary);
+font-size: 26px;
+font-weight: 800;
+letter-spacing: 1px;
+text-transform: uppercase;
+text-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+}
 
-    .main-container {
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 0 12px;
-    }
+.header p {
+margin: 5px 0 0;
+color: var(--text-muted);
+font-size: 13px;
+}
 
-    /* Player Styling */
-    .player-card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 102, 0, 0.3);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-      margin-bottom: 20px;
-    }
+.main-container {
+max-width: 1000px;
+margin: 20px auto;
+padding: 0 12px;
+}
 
-    video {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16/9;
-      background: #000;
-      display: block;
-    }
+/* Player Styling */
+.player-card {
+background: var(--card-bg);
+border-radius: 12px;
+overflow: hidden;
+border: 1px solid rgba(255, 102, 0, 0.3);
+box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+margin-bottom: 20px;
+}
 
-    /* Now Playing Bar with Quality Selector & Real-Time Controls */
-    .now-playing-bar {
-      background: #24242b;
-      padding: 12px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      border-top: 2px solid var(--primary);
-    }
+video {
+width: 100%;
+height: auto;
+aspect-ratio: 16/9;
+background: #000;
+display: block;
+}
 
-    .now-playing {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+/* Now Playing Bar with Quality Selector */
+.now-playing-bar {
+background: #24242b;
+padding: 12px 18px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 10px;
+border-top: 2px solid var(--primary);
+}
 
-    .now-playing-dot {
-      height: 10px;
-      width: 10px;
-      background-color: var(--primary);
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 0 8px var(--primary);
-      animation: pulse 1.5s infinite;
-    }
+.now-playing {
+font-size: 15px;
+font-weight: 600;
+color: #fff;
+display: flex;
+align-items: center;
+gap: 10px;
+}
 
-    .controls-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+.now-playing-dot {
+height: 10px;
+width: 10px;
+background-color: var(--primary);
+border-radius: 50%;
+display: inline-block;
+box-shadow: 0 0 8px var(--primary);
+animation: pulse 1.5s infinite;
+}
 
-    .quality-control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
+.quality-control {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 13px;
+color: var(--text-muted);
+}
 
-    .quality-select {
-      background: #1a1a1e;
-      color: #fff;
-      border: 1px solid var(--primary);
-      padding: 6px 12px;
-      border-radius: 6px;
-      outline: none;
-      font-size: 13px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+.quality-select {
+background: #1a1a1e;
+color: #fff;
+border: 1px solid var(--primary);
+padding: 6px 12px;
+border-radius: 6px;
+outline: none;
+font-size: 13px;
+cursor: pointer;
+transition: 0.2s;
+}
 
-    .quality-select:hover {
-      background: var(--card-hover);
-    }
+.quality-select:hover {
+background: var(--card-hover);
+}
 
-    /* Real-Time Sync Button */
-    .live-sync-btn {
-      background: #e60000;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: 0.2s;
-      box-shadow: 0 0 8px rgba(230, 0, 0, 0.5);
-    }
+@keyframes pulse {
+0% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(1.2); }
+100% { opacity: 1; transform: scale(1); }
+}
 
-    .live-sync-btn:hover {
-      background: #ff1a1a;
-    }
+/* Search Bar */
+.search-container {
+margin-bottom: 20px;
+}
 
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
-      100% { opacity: 1; transform: scale(1); }
-    }
+.search-box {
+width: 100%;
+padding: 14px 18px;
+border-radius: 8px;
+border: 1px solid #333;
+background: var(--card-bg);
+color: #fff;
+font-size: 15px;
+outline: none;
+transition: all 0.3s ease;
+}
 
-    /* Search Bar */
-    .search-container {
-      margin-bottom: 20px;
-    }
+.search-box:focus {
+border-color: var(--primary);
+box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
+}
 
-    .search-box {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: var(--card-bg);
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
+/* Channel Grid */
+.channel-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+gap: 12px;
+}
 
-    .search-box:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
-    }
+.channel-card {
+background: var(--card-bg);
+border-radius: 10px;
+padding: 12px 8px;
+text-align: center;
+cursor: pointer;
+transition: all 0.25s ease;
+border: 1px solid #2a2a30;
+box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
 
-    /* Channel Grid */
-    .channel-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 12px;
-    }
+.channel-card:hover {
+background: var(--card-hover);
+transform: translateY(-4px);
+border-color: var(--primary);
+box-shadow: 0 6px 15px rgba(255, 102, 0, 0.3);
+}
 
-    .channel-card {
-      background: var(--card-bg);
-      border-radius: 10px;
-      padding: 12px 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border: 1px solid #2a2a30;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+.channel-card.active {
+border-color: var(--primary);
+background: #28221e;
+}
 
-    .channel-card:hover {
-      background: var(--card-hover);
-      transform: translateY(-4px);
-      border-color: var(--primary);
-      box-shadow: 0 6px 15px rgba(255, 102, 0, 0.3);
-    }
+.channel-card h4 {
+margin: 0;
+font-size: 13px;
+color: #fff;
+font-weight: 600;
+word-break: break-word;
+}
 
-    .channel-card.active {
-      border-color: var(--primary);
-      background: #28221e;
-    }
+/* Fixed Bottom Footer */
+.footer-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: #16161a;
+border-top: 2px solid var(--primary);
+padding: 12px 20px;
+text-align: center;
+z-index: 999;
+display: flex;
+justify-content: space-around;
+align-items: center;
+box-shadow: 0 -5px 15px rgba(0,0,0,0.8);
+}
 
-    .channel-card h4 {
-      margin: 0;
-      font-size: 13px;
-      color: #fff;
-      font-weight: 600;
-      word-break: break-word;
-    }
+.footer-text {
+color: #fff;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: 0.5px;
+}
 
-    /* Fixed Bottom Footer */
-    .footer-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #16161a;
-      border-top: 2px solid var(--primary);
-      padding: 12px 20px;
-      text-align: center;
-      z-index: 999;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 -5px 15px rgba(0,0,0,0.8);
-    }
+.footer-text span {
+color: var(--primary);
+}
 
-    .footer-text {
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
+.call-btn {
+background: var(--primary);
+color: #fff;
+text-decoration: none;
+padding: 8px 18px;
+border-radius: 20px;
+font-weight: bold;
+font-size: 14px;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+transition: 0.2s ease;
+box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
+}
 
-    .footer-text span {
-      color: var(--primary);
-    }
+.call-btn:hover {
+background: var(--primary-dark);
+}
 
-    .call-btn {
-      background: var(--primary);
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s ease;
-      box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
-    }
-
-    .call-btn:hover {
-      background: var(--primary-dark);
-    }
-
-    @media (max-width: 600px) {
-      .channel-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 8px;
-      }
-      .channel-card {
-        padding: 10px 5px;
-      }
-      .channel-card h4 {
-        font-size: 12px;
-      }
-      .footer-bar {
-        flex-direction: row;
-        padding: 10px;
-      }
-      .footer-text {
-        font-size: 13px;
-      }
-      .call-btn {
-        padding: 6px 12px;
-        font-size: 12px;
-      }
-      .now-playing-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+@media (max-width: 600px) {
+.channel-grid {
+grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+gap: 8px;
+}
+.channel-card {
+padding: 10px 5px;
+}
+.channel-card h4 {
+font-size: 12px;
+}
+.footer-bar {
+flex-direction: row;
+padding: 10px;
+}
+.footer-text {
+font-size: 13px;
+}
+.call-btn {
+padding: 6px 12px;
+font-size: 12px;
+}
+.now-playing-bar {
+flex-direction: column;
+align-items: flex-start;
+}
+}
+</style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>MEHEDI INTERNET</h1>
-    <p>Live TV Streaming Service</p>
-  </div>
-
-  <div class="main-container">
-    <!-- Player Card -->
-    <div class="player-card">
-      <video id="tv-player" controls autoplay playsinline></video>
-      <div class="now-playing-bar">
-        <div class="now-playing">
-          <span class="now-playing-dot"></span>
-          <span id="channel-title">বর্তমানে চলছে: SOMOY NEWS</span>
-        </div>
-        
-        <div class="controls-wrapper">
-          <!-- Real-Time Sync Button -->
-          <button class="live-sync-btn" onclick="syncRealTimeLive()">
-            🔴 LIVE SYNC
-          </button>
-          
-          <!-- Video Quality Switcher Dropdown -->
-          <div class="quality-control">
-            <span>⚙️ কোয়ালিটি:</span>
-            <select id="qualitySelect" class="quality-select" onchange="changeQuality(this.value)">
-              <option value="-1">Auto (Auto-Detect)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Search Input -->
-    <div class="search-container">
-      <input type="text" id="search" class="search-box" placeholder="আপনার পছন্দের চ্যানেল খুঁজুন..." onkeyup="filterChannels()">
-    </div>
-
-    <!-- Channel Cards Grid -->
-    <div class="channel-grid" id="channel-list">
-      
-      <div class="channel-card active" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8', 'SOMOY NEWS')">
-        <h4>SOMOY NEWS</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/gazibdz.stream/live-orgin/gazibdz.stream/playlist.m3u8', 'Gazi TV')">
-        <h4>Gazi TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/TnMn5kZz8aLm/index.m3u8', 'T Sports')">
-        <h4>T Sports</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8', 'DBC News HD')">
-        <h4>DBC News HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/P3y2URgG7LDe/index.m3u8', 'ATN Bangla')">
-        <h4>ATN Bangla</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/RtvHD/index.m3u8', 'RTV')">
-        <h4>RTV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8', 'News 24')">
-        <h4>News 24</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/globaltv.stream/index.m3u8', 'Ekhon')">
-        <h4>Ekhon</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://mtv.sunplex.live/MAASRANGA/index.m3u8', 'Maasranga TV')">
-        <h4>Maasranga TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://116.204.149.16/globaltv/index.m3u8', 'GLOBAL TV HD')">
-        <h4>GLOBAL TV HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.live/live/bijoy_tv_abr/index.m3u8', 'Bijoy Tv')">
-        <h4>Bijoy Tv</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://dzkyvlfyge.erbvr.com/PeaceTvBangla/tracks-v3a1/mono.m3u8', 'Peace tv Bangla')">
-        <h4>Peace tv Bangla</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/islamictvbd.stream/index.m3u8', 'Islamic tv')">
-        <h4>Islamic tv</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://live1.entertv.com.bd/entertv/index.fmp4.m3u8', 'Enter TV')">
-        <h4>Enter TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/playlist.m3u8', 'SRK')">
-        <h4>SRK</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8', 'JamunaTV')">
-        <h4>JamunaTV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/39ee93nUbCCmm5LsyD4t/index.m3u8', 'Bangla Tv')">
-        <h4>Bangla Tv</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://103.190.133.68:1935/news21live/live/playlist.m3u8', 'News 21 Bangla TV')">
-        <h4>News 21 Bangla TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/FNHpYvGZ7FkCE10PwTHm/index.m3u8', 'channelihd')">
-        <h4>channelihd</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8', 'Boishakhi')">
-        <h4>Boishakhi</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/banglaVision/tracks-v1a1/mono.m3u8', 'banglaVision')">
-        <h4>banglaVision</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/mytv-up-off.stream/playlist.m3u8', 'My TV')">
-        <h4>My TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8', 'N TV')">
-        <h4>N TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8', 'Dipto Tv')">
-        <h4>Dipto Tv</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://stream.shariarsuvo.com/hls6/rajdhaniweb.m3u8', 'RAJDHANI TV HD')">
-        <h4>RAJDHANI TV HD</h4>
-      </div>
+<div class="header">
+<h1>MEHEDI INTERNET</h1>
+<p>Live TV Streaming Service</p>
+</div>
+
+<div class="main-container">
+<!-- Player Card -->
+<div class="player-card">
+<video id="tv-player" controls autoplay playsinline></video>
+<div class="now-playing-bar">
+<div class="now-playing">
+<span class="now-playing-dot"></span>
+<span id="channel-title">বর্তমানে চলছে: SOMOY NEWS</span>
+</div>
+<!-- Video Quality Switcher Dropdown -->
+<div class="quality-control">
+<span>⚙️ কোয়ালিটি:</span>
+<select id="qualitySelect" class="quality-select" onchange="changeQuality(this.value)">
+<option value="-1">Auto (Auto-Detect)</option>
+</select>
+</div>
+</div>
+</div>
+
+<!-- Search Input -->
+<div class="search-container">
+<input type="text" id="search" class="search-box" placeholder="আপনার পছন্দের চ্যানেল খুঁজুন..." onkeyup="filterChannels()">
+</div>
+
+<!-- Channel Cards Grid -->
+<div class="channel-grid" id="channel-list">
+
+<div class="channel-card active" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8', 'SOMOY NEWS')">
+<h4>SOMOY NEWS</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/gazibdz.stream/live-orgin/gazibdz.stream/playlist.m3u8', 'Gazi TV')">
+<h4>Gazi TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/TnMn5kZz8aLm/index.m3u8', 'T Sports')">
+<h4>T Sports</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8', 'DBC News HD')">
+<h4>DBC News HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/P3y2URgG7LDe/index.m3u8', 'ATN Bangla')">
+<h4>ATN Bangla</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/RtvHD/index.m3u8', 'RTV')">
+<h4>RTV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8', 'News 24')">
+<h4>News 24</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/globaltv.stream/index.m3u8', 'Ekhon')">
+<h4>Ekhon</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://mtv.sunplex.live/MAASRANGA/index.m3u8', 'Maasranga TV')">
+<h4>Maasranga TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://116.204.149.16/globaltv/index.m3u8', 'GLOBAL TV HD')">
+<h4>GLOBAL TV HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.live/live/bijoy_tv_abr/index.m3u8', 'Bijoy Tv')">
+<h4>Bijoy Tv</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://dzkyvlfyge.erbvr.com/PeaceTvBangla/tracks-v3a1/mono.m3u8', 'Peace tv Bangla')">
+<h4>Peace tv Bangla</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/islamictvbd.stream/index.m3u8', 'Islamic tv')">
+<h4>Islamic tv</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://live1.entertv.com.bd/entertv/index.fmp4.m3u8', 'Enter TV')">
+<h4>Enter TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/playlist.m3u8', 'SRK')">
+<h4>SRK</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8', 'JamunaTV')">
+<h4>JamunaTV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/39ee93nUbCCmm5LsyD4t/index.m3u8', 'Bangla Tv')">
+<h4>Bangla Tv</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://103.190.133.68:1935/news21live/live/playlist.m3u8', 'News 21 Bangla TV')">
+<h4>News 21 Bangla TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/FNHpYvGZ7FkCE10PwTHm/index.m3u8', 'channelihd')">
+<h4>channelihd</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/index.m3u8', 'Boishakhi')">
+<h4>Boishakhi</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/banglaVision/tracks-v1a1/mono.m3u8', 'banglaVision')">
+<h4>banglaVision</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/mytv-up-off.stream/playlist.m3u8', 'My TV')">
+<h4>My TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8', 'N TV')">
+<h4>N TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8', 'Dipto Tv')">
+<h4>Dipto Tv</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://stream.shariarsuvo.com/hls6/rajdhaniweb.m3u8', 'RAJDHANI TV HD')">
+<h4>RAJDHANI TV HD</h4>
+</div>
 
-      <div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/anandatv.stream/tracks-v1a1/mono.m3u8', 'Ananda TV')">
-        <h4>Ananda TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8', 'Ekushey TV')">
-        <h4>Ekushey TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8', 'Channel-16')">
-        <h4>Channel-16</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8', 'G-Serise')">
-        <h4>G-Serise</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://live.sanandatelevision.in/sananda/index.m3u8', 'SANANDA TV')">
-        <h4>SANANDA TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://server.zillarbarta.com/zbcatun/video.m3u8', 'ZB Cartun TV')">
-        <h4>ZB Cartun TV</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://server.zillarbarta.com/ZBCINEMA/index.m3u8', 'ZB Cinema')">
-        <h4>ZB Cinema</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://server.zillarbarta.com/zbmusic/tracks-v1a1/mono.m3u8', 'ZB Music')">
-        <h4>ZB Music</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://live-stream.utkalbongo.com/hls/livebanglatvstream.m3u8', 'Bangla Plus')">
-        <h4>Bangla Plus</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/starJalsha/tracks-v1a1/mono.m3u8', 'Star Jalsha HD')">
-        <h4>Star Jalsha HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/zeeBangla/tracks-v1a1/mono.m3u8', 'Zee Bangla HD')">
-        <h4>Zee Bangla HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/jalshaMovies/tracks-v1a1/mono.m3u8', 'Jalsha Movies HD')">
-        <h4>Jalsha Movies HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://d1g8wgjurz8via.cloudfront.net/bpk-tv/ColorsHD/default/ColorsHD.m3u8', 'Zee Bangla Cinema')">
-        <h4>Zee Bangla Cinema</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/colorsBangla/tracks-v1a1/mono.m3u8', 'Colors Bangla')">
-        <h4>Colors Bangla</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8', 'Sony Aath')">
-        <h4>Sony Aath</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://amg01448-samsungin-enterr10bangla-samsungin-ad-gg.amagi.tv/playlist/amg01448-samsungin-enterr10bangla-samsungin/playlist.m3u8', 'Enter 10 Bangla')">
-        <h4>Enter 10 Bangla</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://202.70.146.135:8000/play/a009/index.m3u8', 'Star Plus HD')">
-        <h4>Star Plus HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.bd/live/and_picture_hd_abr/live/and_picture_hd_720/chunks.m3u8', '&PICTURES')">
-        <h4>&PICTURES</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://d1g8wgjurz8via.cloudfront.net/bpk-tv/NGCHD/default/NGCHD.m3u8', 'Zee Cinema HD')">
-        <h4>Zee Cinema HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'http://66.102.126.10:8000/play/a020/index.m3u8', 'Star Movies Select HD')">
-        <h4>Star Movies Select HD</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://amg00877-b4unew-amg00877c2-xiaomi-in-5489.playouts.now.amagi.tv/playlist.m3u8', 'B4U Movies')">
-        <h4>B4U Movies</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8', 'Sheemaroo Bollywood')">
-        <h4>Sheemaroo Bollywood</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.bd/live/pix_hd_abr/live/sony_pix_hd_720/chunks.m3u8', 'Sony PIX')">
-        <h4>Sony PIX</h4>
-      </div>
-
-      <div class="channel-card" onclick="changeChannel(this, 'https://live20.bozztv.com/giatvplayout7/giatv-209611/index.m3u8', '24/7 Gopal Bhar')">
-        <h4>24/7 Gopal Bhar</h4>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Bottom Floating Bar -->
-  <div class="footer-bar">
-    <div class="footer-text">
-      <span>Mehedi Internet</span> Live TV
-    </div>
-    <a href="tel:01626886070" class="call-btn">
-      📞 Call: 01626886070
-    </a>
-  </div>
-
-  <!-- HLS Script Integration -->
-  <script>
-    var video = document.getElementById('tv-player');
-    var qualitySelect = document.getElementById('qualitySelect');
-    var hls = null;
-    var defaultUrl = 'https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8';
-
-    // Real-time Low-Latency Configuration
-    function playHlsStream(url) {
-      if (Hls.isSupported()) {
-        if (hls) {
-          hls.destroy(); // Clear previous instance
-        }
-        hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,           // Enables HLS low-latency mode
-          liveSyncDurationCount: 1,       // Keeps playback closest to live edge
-          liveMaxLatencyDurationCount: 3, // Reduces delay relative to real-time broadcasting
-          maxBufferLength: 10,             // Optimized buffer size
-          liveDurationInfinity: true
-        });
-        hls.loadSource(url);
-        hls.attachMedia(video);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
-          // Reset quality options dropdown
-          qualitySelect.innerHTML = '<option value="-1">Auto (Auto-Detect)</option>';
-          
-          // Populate Available Quality Levels dynamically
-          hls.levels.forEach(function(level, index) {
-            var res = level.height ? level.height + 'p' : Math.round(level.bitrate / 1000) + ' kbps';
-            var option = document.createElement('option');
-            option.value = index;
-            option.text = res;
-            qualitySelect.appendChild(option);
-          });
-
-          video.play().catch(function(e){ console.log("Autoplay prevented:", e); });
-        });
-      }
-      else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = url;
-        video.addEventListener('loadedmetadata', function() {
-          video.play();
-        });
-      }
-    }
-
-    // Function to Jump straight to Real-Time Live Point
-    function syncRealTimeLive() {
-      if (video.seekable.length > 0) {
-        video.currentTime = video.seekable.end(video.seekable.length - 1);
-        video.play();
-      }
-    }
-
-    // Dynamic Quality Change Function
-    function changeQuality(levelIndex) {
-      if (hls) {
-        hls.currentLevel = parseInt(levelIndex);
-      }
-    }
-
-    // Load Default Channel
-    playHlsStream(defaultUrl);
-
-    // Channel Switching Logic
-    function changeChannel(element, m3u8Url, channelName) {
-      var cards = document.getElementsByClassName('channel-card');
-      for (var i = 0; i < cards.length; i++) {
-        cards[i].classList.remove('active');
-      }
-      if (element) {
-        element.classList.add('active');
-      }
-
-      document.getElementById('channel-title').innerText = "বর্তমানে চলছে: " + channelName;
-      playHlsStream(m3u8Url);
-    }
-
-    // Filter Logic
-    function filterChannels() {
-      var input = document.getElementById('search').value.toLowerCase();
-      var cards = document.getElementsByClassName('channel-card');
-
-      for (var i = 0; i < cards.length; i++) {
-        var title = cards[i].getElementsByTagName('h4')[0].innerText.toLowerCase();
-        if (title.includes(input)) {
-          cards[i].style.display = "flex";
-        } else {
-          cards[i].style.display = "none";
-        }
-      }
-    }
-  </script>
+<div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/anandatv.stream/tracks-v1a1/mono.m3u8', 'Ananda TV')">
+<h4>Ananda TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://210.4.72.204/hls-live/livepkgr/definst/liveevent/livestream3.m3u8', 'Ekushey TV')">
+<h4>Ekushey TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8', 'Channel-16')">
+<h4>Channel-16</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8', 'G-Serise')">
+<h4>G-Serise</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://live.sanandatelevision.in/sananda/index.m3u8', 'SANANDA TV')">
+<h4>SANANDA TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://server.zillarbarta.com/zbcatun/video.m3u8', 'ZB Cartun TV')">
+<h4>ZB Cartun TV</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://server.zillarbarta.com/ZBCINEMA/index.m3u8', 'ZB Cinema')">
+<h4>ZB Cinema</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://server.zillarbarta.com/zbmusic/tracks-v1a1/mono.m3u8', 'ZB Music')">
+<h4>ZB Music</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://live-stream.utkalbongo.com/hls/livebanglatvstream.m3u8', 'Bangla Plus')">
+<h4>Bangla Plus</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/starJalsha/tracks-v1a1/mono.m3u8', 'Star Jalsha HD')">
+<h4>Star Jalsha HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/zeeBangla/tracks-v1a1/mono.m3u8', 'Zee Bangla HD')">
+<h4>Zee Bangla HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/jalshaMovies/tracks-v1a1/mono.m3u8', 'Jalsha Movies HD')">
+<h4>Jalsha Movies HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://d1g8wgjurz8via.cloudfront.net/bpk-tv/ColorsHD/default/ColorsHD.m3u8', 'Zee Bangla Cinema')">
+<h4>Zee Bangla Cinema</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://103.165.93.31:8095/colorsBangla/tracks-v1a1/mono.m3u8', 'Colors Bangla')">
+<h4>Colors Bangla</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.bd/live/sony_aath_abr/live/sony_aath_720/chunks.m3u8', 'Sony Aath')">
+<h4>Sony Aath</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://amg01448-samsungin-enterr10bangla-samsungin-ad-gg.amagi.tv/playlist/amg01448-samsungin-enterr10bangla-samsungin/playlist.m3u8', 'Enter 10 Bangla')">
+<h4>Enter 10 Bangla</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://202.70.146.135:8000/play/a009/index.m3u8', 'Star Plus HD')">
+<h4>Star Plus HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.bd/live/and_picture_hd_abr/live/and_picture_hd_720/chunks.m3u8', '&PICTURES')">
+<h4>&PICTURES</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://d1g8wgjurz8via.cloudfront.net/bpk-tv/NGCHD/default/NGCHD.m3u8', 'Zee Cinema HD')">
+<h4>Zee Cinema HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'http://66.102.126.10:8000/play/a020/index.m3u8', 'Star Movies Select HD')">
+<h4>Star Movies Select HD</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://amg00877-b4unew-amg00877c2-xiaomi-in-5489.playouts.now.amagi.tv/playlist.m3u8', 'B4U Movies')">
+<h4>B4U Movies</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8', 'Sheemaroo Bollywood')">
+<h4>Sheemaroo Bollywood</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://stream.ottplus.bd/live/pix_hd_abr/live/sony_pix_hd_720/chunks.m3u8', 'Sony PIX')">
+<h4>Sony PIX</h4>
+</div>
+
+<div class="channel-card" onclick="changeChannel(this, 'https://live20.bozztv.com/giatvplayout7/giatv-209611/index.m3u8', '24/7 Gopal Bhar')">
+<h4>24/7 Gopal Bhar</h4>
+</div>
+
+</div>
+</div>
+
+<!-- Bottom Floating Bar -->
+<div class="footer-bar">
+<div class="footer-text">
+<span>Mehedi Internet</span> Live TV
+</div>
+<a href="tel:01626886070" class="call-btn">
+📞 Call: 01626886070
+</a>
+</div>
+
+<!-- HLS Script Integration -->
+<script>
+var video = document.getElementById('tv-player');
+var qualitySelect = document.getElementById('qualitySelect');
+var hls = null;
+var defaultUrl = 'https://tvsen6.aynaott.com/4XcqdovJzbbC9WdJA9gk/index.m3u8';
+
+// Play Stream Function using HLS.js
+function playHlsStream(url) {
+if (Hls.isSupported()) {
+if (hls) {
+hls.destroy(); // Clear previous instance
+}
+hls = new Hls({
+enableWorker: true,
+lowLatencyMode: true
+});
+hls.loadSource(url);
+hls.attachMedia(video);
+
+hls.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
+// Reset quality options dropdown
+qualitySelect.innerHTML = '<option value="-1">Auto (Auto-Detect)</option>';
+
+// Populate Available Quality Levels dynamically
+hls.levels.forEach(function(level, index) {
+var res = level.height ? level.height + 'p' : Math.round(level.bitrate / 1000) + ' kbps';
+var option = document.createElement('option');
+option.value = index;
+option.text = res;
+qualitySelect.appendChild(option);
+});
+
+video.play().catch(function(e){ console.log("Autoplay prevented:", e); });
+});
+}
+else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+video.src = url;
+video.addEventListener('loadedmetadata', function() {
+video.play();
+});
+}
+}
+
+// Dynamic Quality Change Function
+function changeQuality(levelIndex) {
+if (hls) {
+hls.currentLevel = parseInt(levelIndex);
+}
+}
+
+// Load Default Channel
+playHlsStream(defaultUrl);
+
+// Channel Switching Logic
+function changeChannel(element, m3u8Url, channelName) {
+var cards = document.getElementsByClassName('channel-card');
+for (var i = 0; i < cards.length; i++) {
+cards[i].classList.remove('active');
+}
+if (element) {
+element.classList.add('active');
+}
+
+document.getElementById('channel-title').innerText = "বর্তমানে চলছে: " + channelName;
+playHlsStream(m3u8Url);
+}
+
+// Filter Logic
+function filterChannels() {
+var input = document.getElementById('search').value.toLowerCase();
+var cards = document.getElementsByClassName('channel-card');
+
+for (var i = 0; i < cards.length; i++) {
+var title = cards[i].getElementsByTagName('h4')[0].innerText.toLowerCase();
+if (title.includes(input)) {
+cards[i].style.display = "flex";
+} else {
+cards[i].style.display = "none";
+}
+}
+}
+</script>
 
 </body>
 </html>
