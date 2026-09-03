@@ -295,9 +295,9 @@
     </div>
 
     <!-- Channel Cards Grid -->
-    <div class="channel-grid" id="Channel-List">
+    <div class="channel-grid" id="channel-list">
       
-     
+      
 
   <div class="channel-card" onclick="changeChannel(this, 'https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/gazibdz.stream/live-orgin/gazibdz.stream/playlist.m3u8', 'Gazi TV')">
     <h4>Gazi TV</h4>
@@ -521,7 +521,6 @@
 
   <!-- Video.js Script -->
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
-   <title>Mehedi Internet - Live TV</title>
   <script>
     // Video.js Player Initialization
     var player = videojs('tv-player', {
@@ -531,7 +530,7 @@
       fluid: true
     });
 
-    // Function to handle Channel Switching (Updated for HTTP & HTTPS support)
+    // Function to handle Channel Switching
     function changeChannel(element, m3u8Url, channelName) {
       // Active Border CSS Toggle
       var cards = document.getElementsByClassName('channel-card');
@@ -545,18 +544,9 @@
       // Update Header Status
       document.getElementById('channel-title').innerText = "বর্তমানে চলছে: " + channelName;
 
-      // HTTP এবং HTTPS একসাথে চালানোর লজিক
-      var finalUrl = m3u8Url;
-      
-      // সাইটটি যদি HTTPS ডোমেনে চলে এবং চ্যানেলের লিংকটি যদি HTTP হয়
-      if (window.location.protocol === 'https:' && m3u8Url.startsWith('http://')) {
-        // ব্রাউজারের সিকিউরিটি ব্লক এড়াতে অল্টারনেটিভ ফ্রি গেটওয়ে যুক্ত করা হলো
-        finalUrl = 'https://googleusercontent.com' + encodeURIComponent(m3u8Url);
-      }
-
       // Update Source & Play Video safely
       player.src({
-        src: finalUrl,
+        src: m3u8Url,
         type: 'application/x-mpegURL'
       });
       
@@ -588,4 +578,3 @@
 
 </body>
 </html>
-
