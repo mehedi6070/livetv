@@ -521,6 +521,7 @@
 
   <!-- Video.js Script -->
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+   <title>Mehedi Internet - Live TV</title>
   <script>
     // Video.js Player Initialization
     var player = videojs('tv-player', {
@@ -530,7 +531,7 @@
       fluid: true
     });
 
-    // Function to handle Channel Switching
+    // Function to handle Channel Switching (Updated for HTTP & HTTPS support)
     function changeChannel(element, m3u8Url, channelName) {
       // Active Border CSS Toggle
       var cards = document.getElementsByClassName('channel-card');
@@ -544,9 +545,18 @@
       // Update Header Status
       document.getElementById('channel-title').innerText = "বর্তমানে চলছে: " + channelName;
 
+      // HTTP এবং HTTPS একসাথে চালানোর লজিক
+      var finalUrl = m3u8Url;
+      
+      // সাইটটি যদি HTTPS ডোমেনে চলে এবং চ্যানেলের লিংকটি যদি HTTP হয়
+      if (window.location.protocol === 'https:' && m3u8Url.startsWith('http://')) {
+        // ব্রাউজারের সিকিউরিটি ব্লক এড়াতে অল্টারনেটিভ ফ্রি গেটওয়ে যুক্ত করা হলো
+        finalUrl = 'https://googleusercontent.com' + encodeURIComponent(m3u8Url);
+      }
+
       // Update Source & Play Video safely
       player.src({
-        src: m3u8Url,
+        src: finalUrl,
         type: 'application/x-mpegURL'
       });
       
@@ -578,3 +588,4 @@
 
 </body>
 </html>
+
