@@ -525,9 +525,8 @@
       fluid: true
     });
 
-    // Helper Function to convert HTTP links to CORS Proxy URL for GitHub Pages
     function getSecureStreamUrl(url) {
-      if (url.startsWith('http://')) {
+      if (url.startsWith('http://') || url.includes('103.165.93.31') || url.includes('cricone.site')) {
         return 'https://corsproxy.io/?' + encodeURIComponent(url);
       }
       return url;
@@ -535,50 +534,7 @@
 
     // Function to handle Channel Switching
     function changeChannel(element, m3u8Url, channelName) {
-      // Active Border CSS Toggle
-      var cards = document.getElementsByClassName('channel-card');
-      for (var i = 0; i < cards.length; i++) {
-        cards[i].classList.remove('active');
-      }
-      if (element) {
-        element.classList.add('active');
-      }
-
-      // Update Header Status
-      document.getElementById('channel-title').innerText = "বর্তমানে চলছে: " + channelName;
-
-      // Get Secure Stream URL if HTTP
-      var finalUrl = getSecureStreamUrl(m3u8Url);
-
-      // Update Source & Play Video safely
-      player.src({
-        src: finalUrl,
-        type: 'application/x-mpegURL'
-      });
-      
-      player.ready(function() {
-        var promise = player.play();
-        if (promise !== undefined) {
-          promise.catch(function(error) {
-            console.log("Autoplay was prevented by browser:", error);
-          });
-        }
-      });
-    }
-
-    // Live Search Filter Function
-    function filterChannels() {
-      var input = document.getElementById('search').value.toLowerCase();
-      var cards = document.getElementsByClassName('channel-card');
-
-      for (var i = 0; i < cards.length; i++) {
-        var title = cards[i].getElementsByTagName('h4')[0].innerText.toLowerCase();
-        if (title.includes(input)) {
-          cards[i].style.display = "flex";
-        } else {
-          cards[i].style.display = "none";
-        }
-      }
+        ...
     }
   </script>
 
